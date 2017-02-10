@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="Keywords" content="关键字，关键词" />
+	<meta name="Description" content="内容" />
+	<title>时钟</title>
+	<style type="text/css">
+		*{padding:0;margin:0;}
+		body{ background:#2c2c3b; }
+		#clock{ width: 302px;height:302px; margin:50px auto; background: url(img/clockBg.png) no-repeat center; position: relative; }
+		#hou,#min,#sec{ position: absolute; transform-origin: bottom; }
+		#hou{ width: 3px; height: 50px;background: green; left:149px;top:100px; }
+		#min{ width: 3px; height: 70px;background: yellow; left:149px;top:80px; }
+		#sec{ width: 1px; height: 90px;background: red; left:150px;top:60px; }
+		#times,#endTime{ height: 60px; line-height: 60px; text-align: center; font-size: 30px; color: #fff; font-weight: 700; }
+
+	</style>
+</head>
+<body>
+
+	<div class="bg">
+		<div id="clock">
+			<div id="hou"></div>
+			<div id="min"></div>
+			<div id="sec"></div>
+		</div>
+		<div id="times"></div>
+		<div id="endTime"></div>
+	</div>
+	
+	<script type="text/javascript">
+		
+		function $(id){
+			return document.getElementById(id);
+		}
+		var hou = $("hou"),
+		 	min = $("min"),
+		 	sec = $("sec"),
+		 	times = $("times");
+			endTime = $("endTime");
+
+
+			var endT = new Date("2018,01,01");
+		setInterval(function(){
+			var date = new Date();
+			// 获取单独的时间  每时每刻的去获取
+			var s = date.getSeconds();
+			var m = date.getMinutes();
+			var h = date.getHours();
+			var sdeg = s*6;
+			var mdeg = m*6+(s/60);  //  m  0-60  
+			var hdeg = h*30+(m/60);// 
+			hou.style.transform = "rotate("+ hdeg +"deg)";
+			min.style.transform = "rotate("+ mdeg +"deg)";
+			sec.style.transform = "rotate("+ sdeg +"deg)";
+
+			times.innerHTML = "北京时间："+ num(h)+"时"+num(m)+"分"+num(s)+"秒";
+		
+			// 计算时间差 
+			var cha = (endT.getTime()) - (date.getTime());
+			//  拿到的是 毫秒差
+			//  24*60*60*1000
+			var days = parseInt(cha/(24*60*60*1000));
+			endTime.innerHTML ="距离2018年1月1日还有<b style='color:red;'>"+days+"</b>天";
+		},1000);
+
+		function num(num){
+			return num<10?"0"+num:num;
+		}
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>商品选择器</title>
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<style type="text/css">
+		*{ padding: 0; margin: 0; font-family: "Microsoft yahei";}
+		li{list-style-type: none;}
+		body{ background: #000000;}
+		.boxDom{ width: 870px; padding: 20px; background:#000; margin: 0 auto;  }
+		h2{ color: #fff; font-size: 22px; font-weight: 100; }
+		.selcets li,.choose li{ display: inline-block;margin: 10px; cursor: pointer; }
+		.selcets li div,.choose li div
+		{ width: 98px; height: 98px; border:1px solid #fff; position: relative;}
+		
+		.selcets li.check p{ background: url(image/ok.png) no-repeat rgba(0,0,0,0.5) center;}
+		.choose li div:hover p{ background: url(image/no.png) no-repeat rgba(0,0,0,0.5) center;}
+		.selcets li div p,.choose li div p
+		{width: 100%; height: 100%; position: absolute; left: 0; top: 0;}
+		
+		.selcets li span,.choose li span{ display: block; text-align: center; height: 30px; line-height: 30px; color: #fff; font-size: 14px; }
+		.line{text-align:right;border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 10px;}
+		#sure{ color: #fff; display: inline-block; width: 120px; text-align: center; height: 30px; line-height: 30px; background: #7b7b7b; border-radius:3px; text-decoration: none; }
+
+	</style>
+</head>
+<body>
+<div class="boxDom">
+	<div class="good">
+		<h2>请选择商品</h2>
+		<ul class="selcets" id="shop">
+			<li>
+				<div>
+					<img src="image/01.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>赤西仁</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/02.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>徐良</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/03.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>Sistar</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/04.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>疯狂原始人</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/05.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>红-冯建宇</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/06.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>惊天魔盗团</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/07.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>植物大战僵尸</span>
+			</li>
+			<li>
+				<div>
+					<img src="image/08.png" width="98" height="98">
+					<p></p>
+				</div>
+				<span>熊出没</span>
+			</li>
+		</ul>
+		<div class="line">
+			<a href="javascript:;" id="sure">确定添加</a>				
+		</div>
+	</div>
+	<div>
+		<h2>已选择商品</h2>
+		<ul class="choose" id="noShop">
+			
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+	function $(id){
+		return document.getElementById(id);
+	}
+	var shop = $("shop");
+	var childs = shop.children;
+
+	// 给所有的元素添加 选中事件
+	for (var i = 0; i < childs.length; i++) {
+		childs[i].onclick = function(){
+			//写法错误 childs[i].className = "check";
+			if (this.className.indexOf("check") == -1) {
+				this.className = "check";
+			}else{
+				this.className = "";
+			}
+		}
+	}
+
+	var checkArr = [],cloneArr=[];
+	$("sure").onclick = function(){
+		//var checkDom = shop.getElementsByClassName("check");
+		var checkDom = getClassDom("check",$("shop"));
+		var arrCheckDom = Array.prototype.slice.call(checkDom);
+		for (var i = 0; i < arrCheckDom.length; i++) {
+			arrCheckDom[i].className = "";
+			if (checkArr.indexOf(arrCheckDom[i]) == -1 ) {
+				var cloneDom = arrCheckDom[i].cloneNode(true);
+				cloneDom.setAttribute("onclick","delMe(this)");
+				checkArr.push(arrCheckDom[i]);
+				cloneArr.push(cloneDom);
+				$("noShop").appendChild(cloneDom);
+			}			
+		}
+	};
+	function delMe(obj){
+		var parent = obj.parentNode;
+		var i = cloneArr.indexOf(obj);
+		cloneArr.splice(i,1);
+		checkArr.splice(i,1);
+		parent.removeChild(obj);
+	}
+
+
+	function getClassDom(cName,parent){
+		var parent = parent || document;
+		if (document.getElementsByClassName) {
+			return parent.getElementsByClassName(cName);
+		}else{
+			var alle = parent.getElementsByTagName("*");
+			var arr = [];
+			for (var i = 0; i < alle.length; i++) {
+				var nArr = alle[i].className.split(" ");
+				for (var j = 0; j < nArr.length; j++) {
+					if(nArr[j]==cName){
+						arr.push(alle[i]);
+						break;
+					}
+				}
+			}
+			return arr;
+		}
+
+	}
+
+</script>
+</body>
+</html>

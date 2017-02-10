@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>放大镜</title>
+<style type="text/css">
+	*{margin:0;padding:0;}
+	li{ list-style: none; }
+	.boxDom{ width: 1000px; margin: 50px auto;}
+	#imgDom{width: 430px; height: 430px; position: relative;}
+	#smallImg{ width: 100%; height: 100%; }
+	/*放大镜*/
+	#moveDom{ width:218px; height: 218px; position: absolute; left: 0; top: 0; background: url(img/scanbg.png); cursor: move; display: none;}
+	#bigDom{ position: absolute; width:450px; height: 450px; left: 110%; top: 0; background: url(img/1.jpg) no-repeat; 
+		box-shadow: 1px 1px 10px #000; display: none}
+	#pro{ margin-top: 20px; }
+	#pro li{ float: left; width: 60px; height: 60px; border:2px solid rgba(0,0,0,0); margin: 12px; }
+	#pro li:hover{ border:2px solid red; }
+	#pro li img{ width: 100%; height: 100%; }
+
+</style>
+</head>
+<body>
+    <div class="boxDom">
+		<div id="imgDom">
+			<img id="smallImg" src="img/11.jpg">
+			<span id="moveDom"></span>
+			<div id="bigDom"></div>
+		</div>
+		<ul id="pro">
+			<li><img src="img/11.jpg"></li>
+			<li><img src="img/12.jpg"></li>
+			<li><img src="img/13.jpg"></li>
+			<li><img src="img/14.jpg"></li>
+			<li><img src="img/15.jpg"></li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		window.onload=function(){
+			function $(id){
+               return document.getElementById(id);
+			}
+			var imgDom = $("imgDom");
+			var moveDom = $("moveDom");
+			var bigDom = $("bigDom");
+			var liDOm = $("pro").children;
+			for(var i=0;i<liDOm.length;i++){				
+				liDOm[i].onmouseenter=function(){
+					// console.log(this.src)//不能用这种方法的原因是src是img里面的属性
+					var SRC = this.children[0].src;//注意这里要用this,如果用liDom[i]会报错的
+					// console.log(SRC);
+					smallImg.src = SRC;
+					var bigDombg = SRC.replace("img/1","img/");
+					bigDom.style.backgroundImage = "url("+bigDombg+")"
+				}
+			}
+			smallImg.onmouseenter=function(){
+				moveDom.style.display="block";
+				bigDom.style.display="block";
+			}
+			smallImg.onmouseleave=function(){
+				moveDom.style.display="none";
+				bigDom.style.display="none";
+			}
+			bigDom.onmouseenter=function(){
+				moveDom.style.display="none";
+				this.style.display="none";
+			}
+			// 移动事件
+			imgDom.onmousemove=function(e){
+				e = e||event;
+
+			//获取浏览器滚动的高度或宽度
+			    var solW = document.body.scrollLeft || document.documentElement.scrollLeft;
+			    var solH = document.body.scrollTop || document.documentElement.scrollTop;;
+
+				var Left = this.offsetLeft;
+				var Top = this.offsetTop;
+				var startX = e.clientX;
+				var startY = e.clientY;
+				// 如果支持pagex,就直接用， 如果不支持，就用窗口+滚动
+			    var pageX = e.pageX?e.pageX:cX+solW;
+			    var pageY = e.pageY?e.pageY:cY+solH;
+
+				// console.log(startX)
+				var moveDomW = moveDom.offsetWidth/2;
+				var moveDomH = moveDom.offsetHeight/2;
+				// console.log(moveDomW+"====="+moveDomH)
+				var movespanX = pageX  - Left- moveDomW;
+				var movespanY = pageY - Top - moveDomH;
+				// console.log(movespanX)
+				var maxLeft = this.offsetWidth - moveDom.offsetWidth;
+				var maxTop = this.offsetHeight - moveDom.offsetHeight;
+				if(movespanX<=0){movespanX=0};
+				if(movespanX>=maxLeft){movespanX=maxLeft};
+				if(movespanY<=0){movespanY=0};
+				if(movespanY>=maxTop){movespanY=maxTop};
+				moveDom.style.left = movespanX+"px";
+				moveDom.style.top = movespanY+"px";
+				// 百分比
+				var bigL=(movespanX/maxLeft).toFixed(2)*100+"%";
+				var bigT = (movespanY/maxTop).toFixed(2)*100+"%";
+				bigDom.style.backgroundPosition = bigL+bigT;
+			}
+
+
+		}
+	</script>
+</body>
+</html>
